@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Rey Matemático AR Exacto</title>
+<title>Rey Matemático AR</title>
 
 <style>
 
@@ -11,6 +11,7 @@ body{
     margin:0;
     overflow:hidden;
     touch-action:none;
+    background:black;
 }
 
 #camera{
@@ -25,8 +26,6 @@ body{
     object-fit:cover;
 
     z-index:-2;
-
-    background:black;
 
 }
 
@@ -60,6 +59,8 @@ canvas{
     background:white;
 
     z-index:100;
+
+    cursor:pointer;
 
 }
 
@@ -131,6 +132,10 @@ renderer.setSize(
     window.innerHeight
 );
 
+renderer.setPixelRatio(
+    window.devicePixelRatio
+);
+
 document.body.appendChild(
     renderer.domElement
 );
@@ -142,7 +147,7 @@ document.body.appendChild(
 const ambient =
     new THREE.AmbientLight(
         0xffffff,
-        1
+        1.2
     );
 
 scene.add(ambient);
@@ -153,135 +158,147 @@ const light =
         1.5
     );
 
-light.position.set(10,20,10);
+light.position.set(
+    10,
+    20,
+    10
+);
 
 scene.add(light);
 
 //////////////////////////////////////////////////////////
-// EJES COORDENADOS
+// EJES LIMPIOS
 //////////////////////////////////////////////////////////
 
-const axesLength = 24;
+const axesLength = 22;
 
-// X ROJO
-const xAxis = new THREE.ArrowHelper(
-    new THREE.Vector3(1,0,0),
-    new THREE.Vector3(0,0,0),
-    axesLength,
-    0xff0000,
-    0.8,
-    0.4
-);
+function createAxis(
+    dir,
+    color,
+    label,
+    labelPos
+){
 
-scene.add(xAxis);
+    const axis =
+        new THREE.ArrowHelper(
 
-// Y VERDE
-const yAxis = new THREE.ArrowHelper(
-    new THREE.Vector3(0,1,0),
-    new THREE.Vector3(0,0,0),
-    axesLength,
-    0x00ff00,
-    0.8,
-    0.4
-);
+            dir,
 
-scene.add(yAxis);
+            new THREE.Vector3(0,0,0),
 
-// Z AZUL
-const zAxis = new THREE.ArrowHelper(
-    new THREE.Vector3(0,0,1),
-    new THREE.Vector3(0,0,0),
-    axesLength,
-    0x0000ff,
-    0.8,
-    0.4
-);
+            axesLength,
 
-scene.add(zAxis);
+            color,
 
-//////////////////////////////////////////////////////////
-// FUNCION TEXTO
-//////////////////////////////////////////////////////////
+            1.2,
 
-function createLabel(text, x, y, z){
+            0.6
+
+        );
+
+    scene.add(axis);
+
+    //////////////////////////////////////////////////////
+    // TEXTO
+    //////////////////////////////////////////////////////
 
     const canvas =
         document.createElement('canvas');
 
-    const context =
-        canvas.getContext('2d');
-
     canvas.width = 256;
     canvas.height = 256;
 
-    context.fillStyle = 'white';
-    context.font = '48px Arial';
-    context.fillText(text, 90, 140);
+    const ctx =
+        canvas.getContext('2d');
+
+    ctx.fillStyle = 'white';
+
+    ctx.font =
+        'bold 120px Arial';
+
+    ctx.textAlign = 'center';
+
+    ctx.fillText(
+        label,
+        128,
+        150
+    );
 
     const texture =
         new THREE.CanvasTexture(canvas);
 
     const material =
         new THREE.SpriteMaterial({
+
             map:texture,
             transparent:true
+
         });
 
     const sprite =
         new THREE.Sprite(material);
 
-    sprite.scale.set(2,2,2);
+    sprite.scale.set(
+        3,
+        3,
+        3
+    );
 
-    sprite.position.set(x,y,z);
+    sprite.position.copy(
+        labelPos
+    );
 
     scene.add(sprite);
 
 }
 
 //////////////////////////////////////////////////////////
-// NUMERACION EN CM
+// X
 //////////////////////////////////////////////////////////
 
-for(let i=0;i<=20;i+=2){
+createAxis(
 
-    const tickGeometry =
-        new THREE.BoxGeometry(
-            0.15,
-            0.15,
-            0.15
-        );
+    new THREE.Vector3(1,0,0),
 
-    const tickMaterial =
-        new THREE.MeshBasicMaterial({
-            color:0xffffff
-        });
+    0xff0000,
 
-    const tick =
-        new THREE.Mesh(
-            tickGeometry,
-            tickMaterial
-        );
+    'X',
 
-    tick.position.set(-0.8,0,i);
+    new THREE.Vector3(24,0,0)
 
-    scene.add(tick);
-
-    createLabel(
-        `${i}cm`,
-        -2,
-        0,
-        i
-    );
-
-}
+);
 
 //////////////////////////////////////////////////////////
-// ETIQUETAS EJES
+// Y
 //////////////////////////////////////////////////////////
 
-createLabel('X',25,0,0);
-createLabel('Y',0,25,0);
-createLabel('Z',0,0,25);
+createAxis(
+
+    new THREE.Vector3(0,1,0),
+
+    0x00ff00,
+
+    'Y',
+
+    new THREE.Vector3(0,24,0)
+
+);
+
+//////////////////////////////////////////////////////////
+// Z
+//////////////////////////////////////////////////////////
+
+createAxis(
+
+    new THREE.Vector3(0,0,1),
+
+    0x0000ff,
+
+    'Z',
+
+    new THREE.Vector3(0,0,24)
+
+);
 
 //////////////////////////////////////////////////////////
 // GRUPO PRINCIPAL
@@ -294,8 +311,8 @@ scene.add(kingGroup);
 
 kingGroup.position.set(
     0,
-    -8,
-    -30
+    0,
+    0
 );
 
 //////////////////////////////////////////////////////////
@@ -350,7 +367,7 @@ const matCross =
     });
 
 //////////////////////////////////////////////////////////
-// FUNCION SUPERFICIE PARAMETRICA
+// SUPERFICIE PARAMETRICA
 //////////////////////////////////////////////////////////
 
 function createSurface(
@@ -465,7 +482,7 @@ const base = createSurface(
 kingGroup.add(base);
 
 //////////////////////////////////////////////////////////
-// HIPERBOLOIDE
+// CUERPO
 //////////////////////////////////////////////////////////
 
 const body = createSurface(
@@ -513,7 +530,7 @@ const body = createSurface(
 kingGroup.add(body);
 
 //////////////////////////////////////////////////////////
-// ELIPSOIDE
+// COLLAR
 //////////////////////////////////////////////////////////
 
 const collar = createSurface(
@@ -564,7 +581,7 @@ const collar = createSurface(
 kingGroup.add(collar);
 
 //////////////////////////////////////////////////////////
-// PARABOLOIDE
+// CORONA
 //////////////////////////////////////////////////////////
 
 const crown = createSurface(
@@ -620,7 +637,9 @@ kingGroup.add(crown);
 //////////////////////////////////////////////////////////
 
 function drawCube(
-    x,y,z,
+    x,
+    y,
+    z,
     size
 ){
 
@@ -638,7 +657,9 @@ function drawCube(
         );
 
     cube.position.set(
-        x,y,z
+        x,
+        y,
+        z
     );
 
     kingGroup.add(cube);
@@ -689,13 +710,13 @@ function addVector(
             direction,
             origin,
 
-            1.4,
+            1.2,
 
             0xff0000,
 
-            0.45,
+            0.4,
 
-            0.22
+            0.2
 
         );
 
@@ -704,7 +725,7 @@ function addVector(
 }
 
 //////////////////////////////////////////////////////////
-// MALLA VECTORIAL
+// VECTOR FIELD
 //////////////////////////////////////////////////////////
 
 for(let x=-6;x<=6;x+=2){
@@ -749,7 +770,7 @@ for(let x=-6;x<=6;x+=2){
 }
 
 //////////////////////////////////////////////////////////
-// INTERACCION TOUCH
+// TOUCH ROTACION
 //////////////////////////////////////////////////////////
 
 let dragging = false;
@@ -829,7 +850,10 @@ renderer.domElement.addEventListener(
                 e.touches[1].clientY;
 
             const dist =
-                Math.sqrt(dx*dx+dy*dy);
+                Math.sqrt(
+                    dx*dx +
+                    dy*dy
+                );
 
             if(prevDist){
 

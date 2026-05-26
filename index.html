@@ -167,65 +167,44 @@ light.position.set(
 scene.add(light);
 
 //////////////////////////////////////////////////////////
-// EJES LIMPIOS
+// FUNCION TEXTO
 //////////////////////////////////////////////////////////
 
-const axesLength = 22;
-
-function createAxis(
-    dir,
+function createTextLabel(
+    text,
     color,
-    label,
-    labelPos
+    x,
+    y,
+    z
 ){
-
-    const axis =
-        new THREE.ArrowHelper(
-
-            dir,
-
-            new THREE.Vector3(0,0,0),
-
-            axesLength,
-
-            color,
-
-            1.2,
-
-            0.6
-
-        );
-
-    scene.add(axis);
-
-    //////////////////////////////////////////////////////
-    // TEXTO
-    //////////////////////////////////////////////////////
 
     const canvas =
         document.createElement('canvas');
 
-    canvas.width = 256;
-    canvas.height = 256;
-
     const ctx =
         canvas.getContext('2d');
 
-    ctx.fillStyle = 'white';
+    canvas.width = 512;
+    canvas.height = 256;
+
+    ctx.fillStyle = color;
 
     ctx.font =
-        'bold 120px Arial';
+        'bold 140px Arial';
 
-    ctx.textAlign = 'center';
+    ctx.textAlign =
+        'center';
 
     ctx.fillText(
-        label,
-        128,
-        150
+        text,
+        256,
+        170
     );
 
     const texture =
-        new THREE.CanvasTexture(canvas);
+        new THREE.CanvasTexture(
+            canvas
+        );
 
     const material =
         new THREE.SpriteMaterial({
@@ -236,16 +215,20 @@ function createAxis(
         });
 
     const sprite =
-        new THREE.Sprite(material);
+        new THREE.Sprite(
+            material
+        );
 
     sprite.scale.set(
-        3,
-        3,
-        3
+        5,
+        2.5,
+        1
     );
 
-    sprite.position.copy(
-        labelPos
+    sprite.position.set(
+        x,
+        y,
+        z
     );
 
     scene.add(sprite);
@@ -253,51 +236,102 @@ function createAxis(
 }
 
 //////////////////////////////////////////////////////////
-// X
+// EJES CLAROS
 //////////////////////////////////////////////////////////
 
-createAxis(
+const axisSize = 24;
 
-    new THREE.Vector3(1,0,0),
+//////////////////////////////////////////////////////////
+// EJE X
+//////////////////////////////////////////////////////////
 
-    0xff0000,
+const axisX =
+    new THREE.ArrowHelper(
 
-    'X',
+        new THREE.Vector3(1,0,0),
 
-    new THREE.Vector3(24,0,0)
+        new THREE.Vector3(0,0,0),
 
+        axisSize,
+
+        0xff0000,
+
+        1.5,
+
+        0.8
+
+    );
+
+scene.add(axisX);
+
+createTextLabel(
+    'EJE X',
+    '#ff0000',
+    28,
+    0,
+    0
 );
 
 //////////////////////////////////////////////////////////
-// Y
+// EJE Y
 //////////////////////////////////////////////////////////
 
-createAxis(
+const axisY =
+    new THREE.ArrowHelper(
 
-    new THREE.Vector3(0,1,0),
+        new THREE.Vector3(0,1,0),
 
-    0x00ff00,
+        new THREE.Vector3(0,0,0),
 
-    'Y',
+        axisSize,
 
-    new THREE.Vector3(0,24,0)
+        0x00ff00,
 
+        1.5,
+
+        0.8
+
+    );
+
+scene.add(axisY);
+
+createTextLabel(
+    'EJE Y',
+    '#00ff00',
+    0,
+    28,
+    0
 );
 
 //////////////////////////////////////////////////////////
-// Z
+// EJE Z
 //////////////////////////////////////////////////////////
 
-createAxis(
+const axisZ =
+    new THREE.ArrowHelper(
 
-    new THREE.Vector3(0,0,1),
+        new THREE.Vector3(0,0,1),
 
-    0x0000ff,
+        new THREE.Vector3(0,0,0),
 
-    'Z',
+        axisSize,
 
-    new THREE.Vector3(0,0,24)
+        0x0000ff,
 
+        1.5,
+
+        0.8
+
+    );
+
+scene.add(axisZ);
+
+createTextLabel(
+    'EJE Z',
+    '#0099ff',
+    0,
+    0,
+    28
 );
 
 //////////////////////////////////////////////////////////

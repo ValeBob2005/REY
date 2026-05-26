@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Rey Matemático AR</title>
+<title>Rey Matemático AR Optimizado</title>
 
 <style>
 
@@ -132,9 +132,7 @@ renderer.setSize(
     window.innerHeight
 );
 
-renderer.setPixelRatio(
-    window.devicePixelRatio
-);
+renderer.setPixelRatio(1);
 
 document.body.appendChild(
     renderer.domElement
@@ -167,171 +165,79 @@ light.position.set(
 scene.add(light);
 
 //////////////////////////////////////////////////////////
-// FUNCION TEXTO
+// EJES OPTIMIZADOS
 //////////////////////////////////////////////////////////
 
-function createTextLabel(
-    text,
+function createSimpleAxis(
     color,
-    x,
-    y,
-    z
+    start,
+    end
 ){
 
-    const canvas =
-        document.createElement('canvas');
-
-    const ctx =
-        canvas.getContext('2d');
-
-    canvas.width = 512;
-    canvas.height = 256;
-
-    ctx.fillStyle = color;
-
-    ctx.font =
-        'bold 140px Arial';
-
-    ctx.textAlign =
-        'center';
-
-    ctx.fillText(
-        text,
-        256,
-        170
-    );
-
-    const texture =
-        new THREE.CanvasTexture(
-            canvas
-        );
-
     const material =
-        new THREE.SpriteMaterial({
-
-            map:texture,
-            transparent:true
-
+        new THREE.LineBasicMaterial({
+            color:color
         });
 
-    const sprite =
-        new THREE.Sprite(
+    const points = [];
+
+    points.push(start);
+    points.push(end);
+
+    const geometry =
+        new THREE.BufferGeometry()
+        .setFromPoints(points);
+
+    const line =
+        new THREE.Line(
+            geometry,
             material
         );
 
-    sprite.scale.set(
-        5,
-        2.5,
-        1
-    );
-
-    sprite.position.set(
-        x,
-        y,
-        z
-    );
-
-    scene.add(sprite);
+    scene.add(line);
 
 }
-
-//////////////////////////////////////////////////////////
-// EJES CLAROS
-//////////////////////////////////////////////////////////
-
-const axisSize = 24;
 
 //////////////////////////////////////////////////////////
 // EJE X
 //////////////////////////////////////////////////////////
 
-const axisX =
-    new THREE.ArrowHelper(
+createSimpleAxis(
 
-        new THREE.Vector3(1,0,0),
+    0xff0000,
 
-        new THREE.Vector3(0,0,0),
+    new THREE.Vector3(0,0,0),
 
-        axisSize,
+    new THREE.Vector3(20,0,0)
 
-        0xff0000,
-
-        1.5,
-
-        0.8
-
-    );
-
-scene.add(axisX);
-
-createTextLabel(
-    'EJE X',
-    '#ff0000',
-    28,
-    0,
-    0
 );
 
 //////////////////////////////////////////////////////////
 // EJE Y
 //////////////////////////////////////////////////////////
 
-const axisY =
-    new THREE.ArrowHelper(
+createSimpleAxis(
 
-        new THREE.Vector3(0,1,0),
+    0x00ff00,
 
-        new THREE.Vector3(0,0,0),
+    new THREE.Vector3(0,0,0),
 
-        axisSize,
+    new THREE.Vector3(0,20,0)
 
-        0x00ff00,
-
-        1.5,
-
-        0.8
-
-    );
-
-scene.add(axisY);
-
-createTextLabel(
-    'EJE Y',
-    '#00ff00',
-    0,
-    28,
-    0
 );
 
 //////////////////////////////////////////////////////////
 // EJE Z
 //////////////////////////////////////////////////////////
 
-const axisZ =
-    new THREE.ArrowHelper(
+createSimpleAxis(
 
-        new THREE.Vector3(0,0,1),
+    0x0000ff,
 
-        new THREE.Vector3(0,0,0),
+    new THREE.Vector3(0,0,0),
 
-        axisSize,
+    new THREE.Vector3(0,0,20)
 
-        0x0000ff,
-
-        1.5,
-
-        0.8
-
-    );
-
-scene.add(axisZ);
-
-createTextLabel(
-    'EJE Z',
-    '#0099ff',
-    0,
-    0,
-    28
 );
 
 //////////////////////////////////////////////////////////
@@ -486,8 +392,8 @@ function createSurface(
 
 const base = createSurface(
 
-    120,
-    120,
+    80,
+    80,
 
     (u,v)=>{
 
@@ -521,8 +427,8 @@ kingGroup.add(base);
 
 const body = createSurface(
 
-    150,
-    150,
+    100,
+    100,
 
     (u,v)=>{
 
@@ -569,8 +475,8 @@ kingGroup.add(body);
 
 const collar = createSurface(
 
-    120,
-    120,
+    80,
+    80,
 
     (u,v)=>{
 
@@ -620,8 +526,8 @@ kingGroup.add(collar);
 
 const crown = createSurface(
 
-    150,
-    150,
+    100,
+    100,
 
     (u,v)=>{
 
@@ -759,14 +665,14 @@ function addVector(
 }
 
 //////////////////////////////////////////////////////////
-// VECTOR FIELD
+// VECTOR FIELD OPTIMIZADO
 //////////////////////////////////////////////////////////
 
-for(let x=-6;x<=6;x+=2){
+for(let x=-4;x<=4;x+=4){
 
-    for(let y=-6;y<=6;y+=2){
+    for(let y=-4;y<=4;y+=4){
 
-        for(let z=0;z<=20;z+=3){
+        for(let z=0;z<=20;z+=5){
 
             let u =
                 x + 2*y;

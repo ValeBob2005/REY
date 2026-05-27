@@ -158,91 +158,6 @@ light.position.set(10,20,10);
 scene.add(light);
 
 //////////////////////////////////////////////////////////
-// EJES XYZ
-//////////////////////////////////////////////////////////
-
-const axesHelper =
-    new THREE.AxesHelper(15);
-
-scene.add(axesHelper);
-
-//////////////////////////////////////////////////////////
-// FUNCION TEXTO
-//////////////////////////////////////////////////////////
-
-function createLabel(
-    text,
-    x,
-    y,
-    z
-){
-
-    const canvas =
-        document.createElement('canvas');
-
-    const context =
-        canvas.getContext('2d');
-
-    canvas.width = 256;
-    canvas.height = 256;
-
-    context.fillStyle = 'white';
-
-    context.font =
-        'Bold 120px Arial';
-
-    context.textAlign =
-        'center';
-
-    context.fillText(
-        text,
-        128,
-        150
-    );
-
-    const texture =
-        new THREE.CanvasTexture(
-            canvas
-        );
-
-    const material =
-        new THREE.SpriteMaterial({
-
-            map:texture,
-            transparent:true
-
-        });
-
-    const sprite =
-        new THREE.Sprite(
-            material
-        );
-
-    sprite.scale.set(
-        2,
-        2,
-        2
-    );
-
-    sprite.position.set(
-        x,
-        y,
-        z
-    );
-
-    scene.add(sprite);
-
-}
-
-//////////////////////////////////////////////////////////
-// NOMBRES EJES
-//////////////////////////////////////////////////////////
-
-createLabel('X',16,0,0);
-createLabel('Y',0,16,0);
-createLabel('Z',0,0,16);
-
-//////////////////////////////////////////////////////////
 // GRUPO PRINCIPAL
 //////////////////////////////////////////////////////////
 
@@ -904,7 +819,131 @@ window.addEventListener(
     }
 );
 
+//////////////////////////////////////////////////////////
+// EJES PRINCIPALES X Y Z
+//////////////////////////////////////////////////////////
+
+function createAxis(dir,color,length){
+
+    const origin =
+        new THREE.Vector3(0,0,0);
+
+    const arrow =
+        new THREE.ArrowHelper(
+
+            dir.normalize(),
+            origin,
+            length,
+            color,
+            1,
+            0.5
+
+        );
+
+    kingGroup.add(arrow);
+
+}
+
+// EJE X ROJO
+createAxis(
+    new THREE.Vector3(1,0,0),
+    0xff0000,
+    20
+);
+
+// EJE Y VERDE
+createAxis(
+    new THREE.Vector3(0,1,0),
+    0x00ff00,
+    20
+);
+
+// EJE Z AZUL
+createAxis(
+    new THREE.Vector3(0,0,1),
+    0x0000ff,
+    20
+);
+
+//////////////////////////////////////////////////////////
+// TEXTO SIMPLE PARA EJES
+//////////////////////////////////////////////////////////
+
+function createLabel(text,x,y,z,color){
+
+    const canvas =
+        document.createElement('canvas');
+
+    canvas.width = 256;
+    canvas.height = 256;
+
+    const ctx =
+        canvas.getContext('2d');
+
+    ctx.fillStyle = color;
+
+    ctx.font = 'Bold 120px Arial';
+
+    ctx.textAlign = 'center';
+
+    ctx.fillText(
+        text,
+        128,
+        150
+    );
+
+    const texture =
+        new THREE.CanvasTexture(canvas);
+
+    const material =
+        new THREE.SpriteMaterial({
+
+            map:texture,
+            transparent:true
+
+        });
+
+    const sprite =
+        new THREE.Sprite(material);
+
+    sprite.scale.set(3,3,3);
+
+    sprite.position.set(x,y,z);
+
+    kingGroup.add(sprite);
+
+}
+
+createLabel('X',21,0,0,'red');
+createLabel('Y',0,21,0,'green');
+createLabel('Z',0,0,21,'blue');
+
+//////////////////////////////////////////////////////////
+// PLANO CUADRICULADO XZ
+//////////////////////////////////////////////////////////
+
+const grid =
+    new THREE.GridHelper(
+
+        40, // tamaño total
+        40, // divisiones
+
+        0xffffff,
+        0x666666
+
+    );
+
+// GridHelper ya viene en XZ
+grid.position.y = 0;
+
+grid.material.transparent = true;
+grid.material.opacity = 0.45;
+
+kingGroup.add(grid);
+
+
 </script>
 
 </body>
 </html>
+

@@ -131,10 +131,6 @@ renderer.setSize(
     window.innerHeight
 );
 
-renderer.setPixelRatio(
-    window.devicePixelRatio
-);
-
 document.body.appendChild(
     renderer.domElement
 );
@@ -171,12 +167,14 @@ const axesHelper =
 scene.add(axesHelper);
 
 //////////////////////////////////////////////////////////
-// FUNCION TEXTO EJES
+// FUNCION TEXTO
 //////////////////////////////////////////////////////////
 
-function createAxisLabel(
+function createLabel(
     text,
-    color
+    x,
+    y,
+    z
 ){
 
     const canvas =
@@ -188,22 +186,18 @@ function createAxisLabel(
     canvas.width = 256;
     canvas.height = 256;
 
-    context.fillStyle =
-        color;
+    context.fillStyle = 'white';
 
     context.font =
-        'Bold 140px Arial';
+        'Bold 120px Arial';
 
     context.textAlign =
         'center';
 
-    context.textBaseline =
-        'middle';
-
     context.fillText(
         text,
         128,
-        128
+        150
     );
 
     const texture =
@@ -225,121 +219,28 @@ function createAxisLabel(
         );
 
     sprite.scale.set(
-        2.5,
-        2.5,
-        2.5
+        2,
+        2,
+        2
     );
 
-    return sprite;
+    sprite.position.set(
+        x,
+        y,
+        z
+    );
+
+    scene.add(sprite);
 
 }
 
 //////////////////////////////////////////////////////////
-// ETIQUETAS X Y Z
+// NOMBRES EJES
 //////////////////////////////////////////////////////////
 
-const xLabel =
-    createAxisLabel(
-        'X',
-        '#ff0000'
-    );
-
-xLabel.position.set(
-    16,
-    0,
-    0
-);
-
-scene.add(xLabel);
-
-const yLabel =
-    createAxisLabel(
-        'Y',
-        '#00ff00'
-    );
-
-yLabel.position.set(
-    0,
-    16,
-    0
-);
-
-scene.add(yLabel);
-
-const zLabel =
-    createAxisLabel(
-        'Z',
-        '#0080ff'
-    );
-
-zLabel.position.set(
-    0,
-    0,
-    16
-);
-
-scene.add(zLabel);
-
-//////////////////////////////////////////////////////////
-// LINEAS EXTRA EJES
-//////////////////////////////////////////////////////////
-
-function createAxisLine(
-    start,
-    end,
-    color
-){
-
-    const geometry =
-        new THREE.BufferGeometry()
-        .setFromPoints([
-            start,
-            end
-        ]);
-
-    const material =
-        new THREE.LineBasicMaterial({
-
-            color:color
-
-        });
-
-    const line =
-        new THREE.Line(
-            geometry,
-            material
-        );
-
-    scene.add(line);
-
-}
-
-createAxisLine(
-
-    new THREE.Vector3(-15,0,0),
-    new THREE.Vector3(15,0,0),
-
-    0xff0000
-
-);
-
-createAxisLine(
-
-    new THREE.Vector3(0,-15,0),
-    new THREE.Vector3(0,15,0),
-
-    0x00ff00
-
-);
-
-createAxisLine(
-
-    new THREE.Vector3(0,0,-15),
-    new THREE.Vector3(0,0,15),
-
-    0x0080ff
-
-);
+createLabel('X',16,0,0);
+createLabel('Y',0,16,0);
+createLabel('Z',0,0,16);
 
 //////////////////////////////////////////////////////////
 // GRUPO PRINCIPAL
@@ -713,7 +614,7 @@ drawCube(e,0,18.5,e);
 drawCube(-e,0,18.5,e);
 
 //////////////////////////////////////////////////////////
-// CAMPO VECTORIAL
+// CAMPO VECTORIAL EXACTO
 //////////////////////////////////////////////////////////
 
 function addVector(
@@ -762,7 +663,7 @@ function addVector(
 }
 
 //////////////////////////////////////////////////////////
-// MALLA VECTORIAL
+// MALLA EXACTA MATLAB
 //////////////////////////////////////////////////////////
 
 for(let x=-6;x<=6;x+=2){
@@ -807,7 +708,7 @@ for(let x=-6;x<=6;x+=2){
 }
 
 //////////////////////////////////////////////////////////
-// ROTACION TOUCH
+// INTERACCION TOUCH
 //////////////////////////////////////////////////////////
 
 let dragging = false;
@@ -816,9 +717,7 @@ let prevX = 0;
 let prevY = 0;
 
 renderer.domElement.addEventListener(
-
     'touchstart',
-
     e=>{
 
         dragging = true;
@@ -830,13 +729,10 @@ renderer.domElement.addEventListener(
             e.touches[0].clientY;
 
     }
-
 );
 
 renderer.domElement.addEventListener(
-
     'touchmove',
-
     e=>{
 
         if(!dragging) return;
@@ -860,19 +756,15 @@ renderer.domElement.addEventListener(
             e.touches[0].clientY;
 
     }
-
 );
 
 renderer.domElement.addEventListener(
-
     'touchend',
-
     ()=>{
 
         dragging = false;
 
     }
-
 );
 
 //////////////////////////////////////////////////////////
@@ -882,9 +774,7 @@ renderer.domElement.addEventListener(
 let prevDist = 0;
 
 renderer.domElement.addEventListener(
-
     'touchmove',
-
     e=>{
 
         if(e.touches.length===2){
@@ -916,19 +806,15 @@ renderer.domElement.addEventListener(
         }
 
     }
-
 );
 
 renderer.domElement.addEventListener(
-
     'touchend',
-
     ()=>{
 
         prevDist = 0;
 
     }
-
 );
 
 //////////////////////////////////////////////////////////
@@ -1001,9 +887,7 @@ animate();
 //////////////////////////////////////////////////////////
 
 window.addEventListener(
-
     'resize',
-
     ()=>{
 
         camera.aspect =
@@ -1018,7 +902,6 @@ window.addEventListener(
         );
 
     }
-
 );
 
 </script>
